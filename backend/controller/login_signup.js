@@ -17,7 +17,9 @@ exports.userSignup=async(req,res)=>{
 
     const hashedPassword=await bcrypt.hash(password,10);
     // Create a new folder for the user
-    const newFolder = new Folder();
+    const newFolder = new Folder({
+        folderName:"Root"
+    });
     try {
         const savedFolder = await newFolder.save(); // Save the folder to get its ID
 

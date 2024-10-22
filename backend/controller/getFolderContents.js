@@ -9,8 +9,8 @@ exports.getFolderContents = async (req, res) => {
         // Fetch the folder and populate its files and subfolders
         if(!id)id=req.user.folder._id;
         let folder = await Folder.findById(id)
-            .populate('foldersInCurrentFolder') // Populate subfolders
-            .populate('filesInCurrentFolder'); // Populate files
+            // .populate('foldersInCurrentFolder') // Populate subfolders
+            // .populate('filesInCurrentFolder'); // Populate files
 
         if (!folder) {
             return res.status(404).json({ message: 'Folder not found.' });

@@ -24,6 +24,10 @@ const fileSchema=new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    usersAccessingThisFile:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+    }]
 })
 module.exports=mongoose.model("File",fileSchema);

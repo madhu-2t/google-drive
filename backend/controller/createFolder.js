@@ -4,13 +4,15 @@ const User = require('../models/userModel');
 // Controller to get folders and files based on rootFolder ID
 exports.createFolder = async (req, res) => {
     let { id } = req.params; // Get folder ID from request parameters
+    let {folderName}=req.body; //Get folder Nmae
+    console.log(folderName);
     // console.log(req.user);
     try {
         // Fetch the folder and populate its files and subfolders
         if(!id)id=req.user.folder._id;
         const user_id=req.user.id;
         // console.log(`User id ${user_id}`);
-        const newFolder = new Folder({parentFolder:id,usersAccessingThisFolder:user_id});
+        const newFolder = new Folder({folderName,parentFolder:id,usersAccessingThisFolder:user_id});
         const savedFolder = await newFolder.save();
         // console.log(`saved folder ${savedFolder}`)
         
