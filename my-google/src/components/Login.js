@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,9 +30,9 @@ function Login() {
       const data = await response.json();
       console.log('Login successful!', data);
 
-      const FolderId = data.user.folder.parentFolder;
-      // Redirect to folder contents page or dashboard
-      navigate(`/folder/`, { state: { FolderId } });
+      const folder = data.user.folder;
+      // Navigate to the folder list component, passing the folder data in state
+      navigate('/folders', { state: { folder } });
     } catch (error) {
       console.error('Error during login:', error);
     }

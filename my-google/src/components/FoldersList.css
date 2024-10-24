@@ -1,0 +1,112 @@
+.folder-list-container {
+    padding: 20px;
+  }
+  
+  .folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+  }
+  
+  .folder-card {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  
+  .folder-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .folder-icon {
+    font-size: 50px;
+  }
+  
+  .folder-name {
+    margin-top: 8px;
+    font-weight: bold;
+  }
+  
+  /* Floating Button Styles */
+  .create-folder-button {
+    position: fixed;
+    width: 150px;
+    right:20px;
+    bottom: 20px;
+    padding: 8px; /* Adjusted padding */
+    /* border-radius: 50%; Circular button */
+    background-color: #3520ac;
+    color: white;
+    font-size: 24px; /* Icon size */
+    border: none;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .create-folder-button:hover {
+    background-color: #2d2575;
+    transform: scale(1.1);
+  }
+  
+  /* Overlay Styles */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .overlay-content {
+    background: white; /* White background for input area */
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow */
+    text-align: center; /* Center the text */
+  }
+  
+  .overlay-content h3 {
+    margin-bottom: 15px; /* Space below the title */
+  }
+  
+  .overlay-content input {
+    padding: 10px; /* Padding for the input field */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px; /* Set width for the input field */
+  }
+  
+  .overlay-content button {
+    margin-top: 10px; /* Space between input and button */
+    padding: 8px 12px; /* Padding for the button */
+    background-color: #007BFF; /* Blue background for the submit button */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .overlay-content button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .close-button {
+    background-color: #dc3545; /* Red color for close button */
+    margin-top: 10px; /* Space above */
+  }
+  
+  .close-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  

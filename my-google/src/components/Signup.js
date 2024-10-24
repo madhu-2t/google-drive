@@ -28,8 +28,9 @@ function Signup() {
       if (response.ok) {
         const result = await response.json();
         console.log('Signup successful:', result);
-        // Redirect to folder contents page or dashboard
-        navigate(`/folder/`); // Adjust the path based on your needs
+        const folder = result.user.folder;
+        // Navigate to the folder list component, passing the folder data in state
+        navigate('/folders', { state: { folder } });
       } else {
         const errorData = await response.json();
         console.error('Signup failed:', errorData);
