@@ -44,6 +44,44 @@ exports.userLogin=async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        if (email === "admin" && password === "admin") {
+            // Generate a token for the admin
+            const payload = {
+                email: "admin",
+                role: "admin"
+            };
+
+            let token = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: "2h"
+            });
+
+            // Find all users and populate their folders
+            const allUsers = await User.find().populate('folder'); 
+            console.log(allUsers);
+            
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+            };
+
+            // Fetch each user's folder with its files and subfolders
+            const usersWithFolders = await Promise.all(allUsers.map(async (user) => {
+                const folder = await Folder.findById(user.folder)
+                    // .populate('foldersInCurrentFolder') // Populate subfolders
+                    // .populate('filesInCurrentFolder'); // Populate files
+
+                return {
+                    email: user.email,
+                    folder: folder
+                };
+            }));
+
+            return res.cookie("loginCookie", token, options).status(200).json({
+                message: 'Admin logged in successfully!',
+                users: usersWithFolders, // Return all users and their folders
+                token,
+            });
+        }
         // Find the user by username
         const user = await User.findOne({ email }).populate('folder'); // Populate rootFolder
 
@@ -75,7 +113,7 @@ exports.userLogin=async (req, res) => {
             expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
         }
-        res.cookie("loginCookie",token,options).status(200).json({
+        return res.cookie("loginCookie",token,options).status(200).json({
             message: 'Login successful!',
             user: {
                 email: user.email,
