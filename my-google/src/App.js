@@ -19,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/folders/" element={<FolderList />} />
           <Route path="/folderContents" element={<FolderContents />} />
+          <Route path="/folder" element={<FolderContents />} />
         </Routes>
       </div>
     </Router>

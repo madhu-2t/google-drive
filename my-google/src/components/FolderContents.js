@@ -4,7 +4,7 @@ import './FolderContents.css'; // Import the CSS file for styling
 
 function FolderContents() {
   const location = useLocation();
-  const { folder} = location.state; // Access the folder data passed from FolderList
+  const { folder } = location.state; // Access the folder data passed from FolderList
 
   return (
     <div className="folder-contents-container">
