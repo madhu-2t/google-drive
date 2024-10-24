@@ -6,6 +6,35 @@ const jwt=require("jsonwebtoken");
 require("dotenv").config();
 
 
+const getAllNestedFolders = async (folderId) => {
+    // Fetch the current folder
+    const folder = await Folder.findById(folderId)
+        .populate('foldersInCurrentFolder') // Populate subfolders
+        .populate('filesInCurrentFolder'); // Populate files
+    
+    if (!folder) {
+        throw new Error('Folder not found.');
+    }
+
+    // Recursively fetch all subfolders and their contents
+    const nestedSubfolders = await Promise.all(
+        folder.foldersInCurrentFolder.map(async (subfolder) => {
+            return await getAllNestedFolders(subfolder._id);
+        })
+    );
+
+    // Return the folder with its nested subfolders and files
+    return {
+        _id: folder._id,
+        folderName: folder.folderName,
+        parentFolder: folder.parentFolder,
+        foldersInCurrentFolder: nestedSubfolders, // Place nested subfolders here
+        filesInCurrentFolder: folder.filesInCurrentFolder,
+        usersAccessingThisFolder: folder.usersAccessingThisFolder,
+        __v: folder.__v
+    };
+};
+
 exports.userSignup=async(req,res)=>{
     const { email, password,phone_no } = req.body;
 
@@ -50,38 +79,39 @@ exports.userLogin=async (req, res) => {
                 email: "admin",
                 role: "admin"
             };
-
+        
             let token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn: "2h"
             });
-
-            // Find all users and populate their folders
+        
+            // Find all users and populate their root folders
             const allUsers = await User.find().populate('folder'); 
-            console.log(allUsers);
-            
+        
             const options = {
                 expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
                 httpOnly: true,
             };
-
-            // Fetch each user's folder with its files and subfolders
-            const usersWithFolders = await Promise.all(allUsers.map(async (user) => {
-                const folder = await Folder.findById(user.folder)
-                    // .populate('foldersInCurrentFolder') // Populate subfolders
-                    // .populate('filesInCurrentFolder'); // Populate files
-
-                return {
-                    email: user.email,
-                    folder: folder
-                };
-            }));
-
+        
+            // Fetch each user's folder with all nested subfolders and files
+            const usersWithFolders = await Promise.all(
+                allUsers.map(async (user) => {
+                    // Use the getAllNestedFolders function to get all nested folders and files
+                    const folderContents = await getAllNestedFolders(user.folder._id);
+        
+                    return {
+                        email: user.email,
+                        folder: folderContents
+                    };
+                })
+            );
+        
             return res.cookie("loginCookie", token, options).status(200).json({
                 message: 'Admin logged in successfully!',
-                users: usersWithFolders, // Return all users and their folders
+                users: usersWithFolders, // Return all users with their folders and nested subfolders
                 token,
             });
         }
+        
         // Find the user by username
         const user = await User.findOne({ email }).populate('folder'); // Populate rootFolder
 
@@ -105,10 +135,10 @@ exports.userLogin=async (req, res) => {
         });
 
         // Fetch the root folder and populate its files and subfolders
-        const folder = await Folder.findById(user.folder)
-            .populate('foldersInCurrentFolder') // Populate subfolders
-            .populate('filesInCurrentFolder'); // Populate files
-
+        // const folder = await Folder.findById(user.folder)
+        //     .populate('foldersInCurrentFolder') // Populate subfolders
+        //     .populate('filesInCurrentFolder'); // Populate files
+        let folderContents = await getAllNestedFolders(user.folder._id);
         const options={
             expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
@@ -117,7 +147,7 @@ exports.userLogin=async (req, res) => {
             message: 'Login successful!',
             user: {
                 email: user.email,
-                folder: folder // Return the populated root folder
+                folder: folderContents // Return the populated root folder
             },
             token,
             message:"User loggedin Sucessful"
