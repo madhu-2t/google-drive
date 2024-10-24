@@ -10,9 +10,10 @@ const {createFolder}=require("../controller/createFolder.js");
 const {uploadFile}=require("../controller/uploadFiles.js");
 //Mapping controllers
 router.post("/signup",userSignup);
-router.get("/login",userLogin);
+router.post("/login",userLogin);
 router.get("/open/:id?",auth,getFolderContents);
-router.get("/createFolder/:id?",auth,createFolder);
+router.post("/createFolder/:id?",auth,createFolder);
 router.post("/uploadFile/:id?",auth,uploadFile);
+
 
 module.exports=router;
